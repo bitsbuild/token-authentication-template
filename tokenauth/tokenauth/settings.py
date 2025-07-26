@@ -4,7 +4,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 SECRET_KEY = os.getenv('DSK')
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
