@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer,CharField
+from rest_framework.serializers import ModelSerializer,CharField,ValidationError
 from django.contrib.auth.models import User
 class UserSerializer(ModelSerializer):
     confirm_password = CharField(write_only=True)
@@ -15,6 +15,15 @@ class UserSerializer(ModelSerializer):
                 'write_only':True
                         }
         }
+    def validate(self,data):
+        if User.objects.filter(username=data['username']).exists():
+            raise ValidationError("Username Exists Already!")
+        elif data['password'] != data['confirm_password']:
+            raise ValidationError("Passwords Do Not Match")
+        elif User.objects.filter(email=data['email']).exists():
+            raise ValidationError("Existing Account Connected To This Mail ID")
+        else:
+            return data
     def create(self, validated_data):
         validated_data.pop('confirm_password')
         user = User.objects.create(username=validated_data['username'],email=validated_data['email'])
